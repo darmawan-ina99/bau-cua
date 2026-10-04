@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="description" content="Bau Cua Nusantara — permainan tradisional bầu cua tôm cá versi hiburan modern. Tanpa taruhan uang asli, tanpa deposit. Chip virtual gratis.">
 <meta name="theme-color" content="#0b0e1a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Bau Cua Nusantara — Hiburan Tanpa Taruhan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -581,6 +585,7 @@ function showToast(msg, bad=false){
 
 setTimeout(()=>{ for(let d=0; d<3; d++) setDieFace(d, 4); }, 60);
 render();
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 </script>
 </body>
 </html>
