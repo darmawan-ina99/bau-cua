@@ -36,17 +36,17 @@
 
   .stage{
     position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-    perspective:950px; cursor:pointer;
+    perspective:760px; cursor:pointer;
   }
-  .row{display:flex;flex-direction:column;gap:5vh;align-items:center;transform:rotateX(-19deg)}
-  .slot{position:relative;width:clamp(76px,19vh,102px);height:clamp(76px,19vh,102px)}
+  .row{display:flex;flex-direction:column;gap:5vh;align-items:center;transform:rotateX(-20deg);transform-style:preserve-3d}
+  .slot{position:relative;width:clamp(76px,19vh,102px);height:clamp(76px,19vh,102px);transform-style:preserve-3d}
 
   .shadow{
     position:absolute;left:4%;right:4%;bottom:-28px;height:34px;
     background:radial-gradient(50% 50% at 50% 50%, rgba(8,0,1,.68), transparent 72%);
     filter:blur(3.5px);
   }
-  .hop{position:absolute;inset:0}
+  .hop{position:absolute;inset:0;transform-style:preserve-3d}
   .hop.rolling{animation:hop 1.7s cubic-bezier(.3,.6,.4,1)}
   .hop.rolling.d2{animation-duration:1.95s}
   .hop.rolling.d3{animation-duration:2.2s}
@@ -103,6 +103,10 @@
   .f3{transform:rotateY(-90deg) translateZ(calc(clamp(78px,24vw,104px)/2))}
   .f4{transform:rotateX(90deg)  translateZ(calc(clamp(78px,24vw,104px)/2))}
   .f5{transform:rotateX(-90deg) translateZ(calc(clamp(78px,24vw,104px)/2))}
+  .f1,.f3{filter:brightness(.9)}
+  .f2{filter:brightness(.84)}
+  .f4{filter:brightness(1.07)}
+  .f5{filter:brightness(.78)}
 </style>
 </head>
 <body>
