@@ -88,12 +88,18 @@
     background:linear-gradient(155deg,rgba(255,255,255,.95),transparent);
     border-radius:50%;filter:blur(2px);pointer-events:none;
   }
-  .face svg{
-    width:58%;height:58%;position:relative;z-index:1;
-    filter:brightness(0) invert(1)
-           drop-shadow(0 1px 0 rgba(255,255,255,.3))
-           drop-shadow(0 2px 2px rgba(35,0,2,.6));
+  .sym{
+    position:absolute;inset:12%;z-index:1;
+    background-image:url(animals.png);
+    background-size:300% 200%;background-repeat:no-repeat;
+    filter:drop-shadow(0 3px 4px rgba(30,0,0,.55));
   }
+  .sym.s0{background-position:0% 0%}
+  .sym.s1{background-position:50% 0%}
+  .sym.s2{background-position:100% 0%}
+  .sym.s3{background-position:0% 100%}
+  .sym.s4{background-position:50% 100%}
+  .sym.s5{background-position:100% 100%}
   .f0{transform:rotateY(0deg)   translateZ(calc(clamp(78px,24vw,104px)/2))}
   .f1{transform:rotateY(90deg)  translateZ(calc(clamp(78px,24vw,104px)/2))}
   .f2{transform:rotateY(180deg) translateZ(calc(clamp(78px,24vw,104px)/2))}
@@ -112,14 +118,7 @@
   </div>
 <script>
 'use strict';
-const SYM = [
-  {id:'labu', svg:`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5af29a"/><stop offset="1" stop-color="#1e9e5a"/></linearGradient></defs><rect x="28" y="4" width="8" height="9" rx="3.5" fill="#8a6a3a"/><ellipse cx="32" cy="16" rx="9.5" ry="8" fill="url(#gl)"/><ellipse cx="32" cy="40" rx="21" ry="19" fill="url(#gl)"/><path d="M24 46 Q32 58 40 46" stroke="#177344" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="30" rx="4.5" ry="7.5" fill="#7dffb5" opacity=".5" transform="rotate(-18 24 30)"/><path d="M40 22 Q46 26 44 32" stroke="#7dffb5" stroke-width="2" fill="none" opacity=".4" stroke-linecap="round"/></svg>`},
-  {id:'kepiting', svg:`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8d9e"/><stop offset="1" stop-color="#e02946"/></linearGradient></defs><path d="M14 30 Q6 24 8 15 Q14 17 16 24" fill="none" stroke="url(#gc)" stroke-width="6.5" stroke-linecap="round"/><path d="M50 30 Q58 24 56 15 Q50 17 48 24" fill="none" stroke="url(#gc)" stroke-width="6.5" stroke-linecap="round"/><circle cx="10" cy="12" r="5.5" fill="#ff8d9e"/><circle cx="54" cy="12" r="5.5" fill="#ff8d9e"/><ellipse cx="32" cy="38" rx="18.5" ry="13.5" fill="url(#gc)"/><path d="M18 48 L11 56 M46 48 L53 56 M22 51 L17 59 M42 51 L47 59" stroke="#c22438" stroke-width="3" stroke-linecap="round"/><ellipse cx="24" cy="27" rx="4" ry="5" fill="#ffb4bf"/><ellipse cx="40" cy="27" rx="4" ry="5" fill="#ffb4bf"/><circle cx="24" cy="27.6" r="1.7" fill="#26141a"/><circle cx="40" cy="27.6" r="1.7" fill="#26141a"/><path d="M27 44 Q32 47.5 37 44" stroke="#26141a" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>`},
-  {id:'udang', svg:`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gu" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffc163"/><stop offset="1" stop-color="#f0761f"/></linearGradient></defs><path d="M50 18 Q58 12 60 6" stroke="#ffc163" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M52 22 Q60 18 62 14" stroke="#ffc163" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M16 44 Q12 20 34 15 Q52 12 51 24 Q50 34 36 38 Q24 41 22 48 Z" fill="url(#gu)"/><path d="M18 50 Q22 44 30 42 L33 49 Q25 52 20 55 Z" fill="#f0761f"/><path d="M12 52 L5 58 M13 56 L8 63 M16 58 L13 64" stroke="#f0761f" stroke-width="3.2" stroke-linecap="round"/><path d="M28 24 Q36 20 42 24 M26 31 Q34 27 41 30" stroke="#ffd9a3" stroke-width="2.1" fill="none" stroke-linecap="round" opacity=".85"/><circle cx="42" cy="19" r="2.1" fill="#26141a"/><path d="M46 26 Q49 30 47 33" stroke="#ffd9a3" stroke-width="1.8" fill="none" opacity=".6" stroke-linecap="round"/></svg>`},
-  {id:'ikan', svg:`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gi" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6fd2ff"/><stop offset="1" stop-color="#2185d0"/></linearGradient></defs><path d="M10 32 Q24 14 44 16 Q56 17 58 24 L50 27 L58 30 Q56 40 44 42 Q28 46 10 32 Z" fill="url(#gi)"/><path d="M10 32 L2 22 Q6 32 2 42 Z" fill="#2185d0"/><path d="M20 27 Q28 21 38 22" stroke="#bfe9ff" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".8"/><circle cx="47" cy="25" r="2.5" fill="#fff"/><circle cx="47.6" cy="25.4" r="1.2" fill="#12203a"/><path d="M30 36 Q34 32 38 35" stroke="#1a6fae" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M18 34 Q22 38 27 39" stroke="#bfe9ff" stroke-width="1.8" fill="none" opacity=".5" stroke-linecap="round"/></svg>`},
-  {id:'ayam', svg:`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ga" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffcf87"/><stop offset="1" stop-color="#d8631f"/></linearGradient></defs><path d="M34 8 Q31 4 36 3 Q39 6 37 9 M40 10 Q40 4 45 5 Q45 9 42 11 M29 10 Q26 5 31 4" stroke="#ff5d4f" stroke-width="3.6" fill="none" stroke-linecap="round"/><circle cx="34" cy="15" r="6.6" fill="url(#ga)"/><path d="M40 15 L48 17 L40 20 Z" fill="#ffd166"/><circle cx="36" cy="14" r="1.6" fill="#26141a"/><path d="M33 18 L34 20 L36 19" stroke="#8c3f12" stroke-width="1.6" fill="none"/><path d="M14 38 Q10 24 26 22 Q40 20 40 30 Q41 42 26 46 Q14 48 14 38 Z" fill="url(#ga)"/><path d="M15 40 Q4 44 3 52 Q10 52 15 47 Q12 55 8 60 Q16 58 19 52" fill="#b84e17"/><path d="M24 30 Q34 26 38 32" stroke="#ffe0b0" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/><path d="M22 46 L20 56 M30 47 L30 57" stroke="#b84e17" stroke-width="3" stroke-linecap="round"/><path d="M22 56 L18 58 M22 56 L26 57 M30 57 L27 60 M30 57 L33 59" stroke="#ffd166" stroke-width="2.2" stroke-linecap="round"/></svg>`},
-  {id:'rusa', svg:`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e0b25a"/><stop offset="1" stop-color="#96601f"/></linearGradient></defs><path d="M18 22 Q10 20 8 12 Q14 13 16 18 Q14 8 20 4 Q22 12 21 18" stroke="#e8d9ff" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M46 22 Q54 20 56 12 Q50 13 48 18 Q50 8 44 4 Q42 12 43 18" stroke="#e8d9ff" stroke-width="3.4" fill="none" stroke-linecap="round"/><ellipse cx="32" cy="34" rx="13" ry="15" fill="url(#gr)"/><ellipse cx="24" cy="52" rx="6" ry="9" fill="#84501b"/><ellipse cx="40" cy="52" rx="6" ry="9" fill="#84501b"/><path d="M22 26 Q14 28 12 24 Q16 22 22 23 M42 26 Q50 28 52 24 Q48 22 42 23" fill="#d9a762"/><circle cx="27" cy="31" r="2.4" fill="#fff"/><circle cx="37" cy="31" r="2.4" fill="#fff"/><circle cx="27.5" cy="31.4" r="1.1" fill="#26141a"/><circle cx="37.5" cy="31.4" r="1.1" fill="#26141a"/><ellipse cx="32" cy="39" rx="1.6" ry="2" fill="#26141a"/><path d="M29 43 Q32 45.5 35 43" stroke="#5c3a10" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`},
-];
+const SYM = ['labu','kepiting','udang','ikan','ayam','rusa'];
 const FACE_FRONT = [
   {x:0,y:0},{x:0,y:-90},{x:0,y:180},
   {x:0,y:90},{x:-90,y:0},{x:90,y:0},
@@ -130,8 +129,10 @@ for(let d=0; d<3; d++){
   const die = document.getElementById('die'+d);
   for(let f=0; f<6; f++){
     const face = document.createElement('div');
-    face.className = 'face f'+f;
-    face.innerHTML = SYM[f].svg;
+face.className = 'face f'+f;
+    const sym = document.createElement('div');
+    sym.className = 'sym s'+f;
+    face.appendChild(sym);
     die.appendChild(face);
   }
 }
