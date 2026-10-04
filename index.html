@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="description" content="Bau Cua Nusantara — permainan tradisional bầu cua tôm cá versi hiburan. Tanpa taruhan uang asli, tanpa deposit. Chip virtual gratis.">
+<title>Bau Cua Nusantara — Hiburan Tanpa Taruhan</title>
+<style>
+  :root{
+    --red:#a4161a; --red-dark:#6d0f12; --red-deep:#4a0a0c;
+    --gold:#f4c95d; --gold-dark:#c9962e;
+    --cream:#fdf6e3; --ink:#2b1d12;
+    --green:#2d6a4f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:radial-gradient(ellipse at top,#8f1418 0%,var(--red-deep) 60%,#2a0507 100%);
+    color:var(--cream); overflow-x:hidden; min-height:100vh;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .wrap{width:100%;max-width:480px;padding:12px 12px 90px}
+
+  header{text-align:center;padding:10px 0 6px}
+  header h1{
+    font-size:1.55rem;font-weight:800;letter-spacing:.5px;
+    color:var(--gold);text-shadow:0 2px 8px rgba(0,0,0,.55);
+  }
+  header .sub{
+    font-size:.72rem;color:#f3d9a4;opacity:.85;margin-top:2px;letter-spacing:.4px;
+  }
+  .banner{
+    margin:8px 0 10px;padding:7px 10px;border-radius:10px;
+    background:rgba(45,106,79,.25);border:1px solid rgba(244,201,93,.35);
+    font-size:.72rem;text-align:center;color:#e9f5ee;line-height:1.45;
+  }
+  .banner b{color:var(--gold)}
+
+  /* ------- saldo & chip ------- */
+  .topbar{
+    display:flex;gap:8px;align-items:stretch;margin-bottom:10px;
+  }
+  .balance{
+    flex:1;background:linear-gradient(145deg,#7a1013,var(--red-dark));
+    border:1px solid rgba(244,201,93,.4);border-radius:14px;
+    padding:8px 12px;display:flex;flex-direction:column;justify-content:center;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 3px 8px rgba(0,0,0,.35);
+  }
+  .balance .lbl{font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:#f0d6a2}
+  .balance .val{font-size:1.45rem;font-weight:800;color:var(--gold);line-height:1.1}
+  .refill{
+    border:none;border-radius:14px;padding:8px 14px;cursor:pointer;
+    background:linear-gradient(145deg,var(--gold),var(--gold-dark));
+    color:#3d2b0a;font-weight:700;font-size:.8rem;
+    box-shadow:0 3px 8px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.5);
+  }
+  .refill:active{transform:scale(.96)}
+
+  .denoms{display:flex;gap:6px;margin-bottom:10px}
+  .denom{
+    flex:1;padding:8px 0;border-radius:10px;border:2px solid transparent;
+    background:rgba(0,0,0,.25);color:#e8d9b5;font-weight:700;font-size:.9rem;
+    cursor:pointer;text-align:center;transition:.15s;position:relative;
+  }
+  .denom.sel{border-color:var(--gold);background:rgba(244,201,93,.15);color:var(--gold);transform:translateY(-2px)}
+  .denom.c10{background:#1b4d3e;color:#bfe8d5}.denom.c10.sel{border-color:#7de3b8;color:#7de3b8}
+  .denom.c50{background:#7a4a00;color:#ffd9a0}.denom.c50.sel{border-color:#ffb95c;color:#ffb95c}
+  .denom.c100{background:#5c1010;color:#ffb3b3}.denom.c100.sel{border-color:#ff8f8f;color:#ff8f8f}
+  .denom.c500{background:#3b0d52;color:#e2c4ff}.denom.c500.sel{border-color:#c89aff;color:#c89aff}
+
+  /* ------- meja taruhan ------- */
+  .board{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;
+  }
+  .cell{
+    position:relative;background:linear-gradient(160deg,#fffdf4,#f3ead0);
+    border:2px solid #d9c89a;border-radius:14px;padding:8px 4px 6px;
+    cursor:pointer;text-align:center;overflow:hidden;transition:.15s;
+    box-shadow:0 3px 6px rgba(0,0,0,.3), inset 0 0 0 2px rgba(255,255,255,.6);
+  }
+  .cell:active{transform:scale(.96)}
+  .cell .icon{height:44px;display:flex;align-items:center;justify-content:center}
+  .cell .icon svg{height:40px;width:40px}
+  .cell .name{font-size:.68rem;font-weight:800;color:var(--ink);text-transform:uppercase;letter-spacing:.5px}
+  .cell .amt{
+    font-size:.95rem;font-weight:800;margin-top:2px;min-height:18px;color:var(--red);
+  }
+  .cell .amt.has::before{content:'🪙 ';font-size:.7rem}
+  .cell.win{
+    animation:winPulse .7s ease 2;border-color:var(--gold);
+    background:linear-gradient(160deg,#fff9e0,#ffe9a8);
+  }
+  @keyframes winPulse{
+    0%,100%{box-shadow:0 3px 6px rgba(0,0,0,.3),0 0 0 0 rgba(244,201,93,.9)}
+    50%{box-shadow:0 3px 6px rgba(0,0,0,.3),0 0 0 10px rgba(244,201,93,0)}
+  }
+  .cell::after{
+    content:'+'attr(data-add);position:absolute;top:4px;right:6px;
+    font-size:.6rem;font-weight:800;color:#2d6a4f;opacity:0;transition:.3s;
+  }
+  .cell.win::after{opacity:1}
+
+  /* ------- dadu 3D ------- */
+  .dice-zone{
+    background:linear-gradient(180deg,rgba(0,0,0,.28),rgba(0,0,0,.12));
+    border:1px solid rgba(244,201,93,.25);border-radius:18px;
+    padding:16px 10px 12px;margin-bottom:12px;
+  }
+  .dice{display:flex;justify-content:center;gap:22px;perspective:900px;height:110px;align-items:center}
+  .die-slot{width:78px;height:78px;position:relative}
+  .die{
+    width:100%;height:100%;position:relative;transform-style:preserve-3d;
+    transition:transform 1.25s cubic-bezier(.18,.9,.28,1);
+  }
+  .die.slow{transition-duration:1.55s}
+  .die.slower{transition-duration:1.85s}
+  .die-hop{position:absolute;inset:0;animation:hop 1.25s ease}
+  .die-hop.slow{animation-duration:1.55s}.die-hop.slower{animation-duration:1.85s}
+  @keyframes hop{
+    0%{transform:translateY(0)}30%{transform:translateY(-26px)}
+    55%{transform:translateY(4px)}75%{transform:translateY(-8px)}100%{transform:translateY(0)}
+  }
+  .face{
+    position:absolute;width:78px;height:78px;
+    background:linear-gradient(145deg,#fffef8,#efe6cf);
+    border:2px solid #d9c89a;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:inset 0 0 12px rgba(166,127,46,.25);
+    backface-visibility:hidden;
+  }
+  .face svg{width:52px;height:52px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.18))}
+  .f0{transform:rotateY(0deg) translateZ(39px)}
+  .f1{transform:rotateY(90deg) translateZ(39px)}
+  .f2{transform:rotateY(180deg) translateZ(39px)}
+  .f3{transform:rotateY(-90deg) translateZ(39px)}
+  .f4{transform:rotateX(90deg) translateZ(39px)}
+  .f5{transform:rotateX(-90deg) translateZ(39px)}
+
+  .dice-label{text-align:center;font-size:.72rem;color:#f0d6a2;margin-top:10px;min-height:16px}
+  .dice-label b{color:var(--gold)}
+
+  /* ------- tombol aksi ------- */
+  .actions{display:flex;gap:8px;margin-bottom:12px}
+  .btn{
+    flex:1;border:none;border-radius:14px;padding:13px 0;font-weight:800;
+    font-size:.95rem;cursor:pointer;letter-spacing:.5px;transition:.15s;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn-roll{
+    background:linear-gradient(145deg,var(--gold),var(--gold-dark));color:#3d2b0a;
+    box-shadow:0 4px 10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.5);
+    font-size:1.05rem;
+  }
+  .btn-roll:disabled{filter:grayscale(.6) brightness(.7);cursor:not-allowed}
+  .btn-clear{background:rgba(0,0,0,.3);color:#e8d9b5;border:1px solid rgba(244,201,93,.3)}
+
+  /* ------- riwayat ------- */
+  .history{background:rgba(0,0,0,.22);border:1px solid rgba(244,201,93,.18);border-radius:14px;padding:10px}
+  .history h3{font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:#f0d6a2;margin-bottom:8px}
+  .hist-rows{display:flex;flex-direction:column;gap:6px}
+  .hrow{
+    display:flex;align-items:center;justify-content:space-between;
+    font-size:.78rem;background:rgba(255,255,255,.05);border-radius:8px;padding:5px 10px;
+  }
+  .hrow .syms{display:flex;gap:6px}
+  .hrow .syms svg{width:20px;height:20px}
+  .hrow .net{font-weight:800}
+  .hrow .net.plus{color:#8fe3b0}.hrow .net.minus{color:#ff9d9d}
+
+  footer{
+    margin-top:6px;text-align:center;font-size:.62rem;color:#d8bd8d;opacity:.75;line-height:1.5;
+    padding-bottom:12px;
+  }
+
+  /* ------- toast ------- */
+  .toast{
+    position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);
+    background:#1e4d3a;color:#dff5e8;border:1px solid #2d6a4f;
+    padding:10px 18px;border-radius:12px;font-weight:700;font-size:.85rem;
+    opacity:0;pointer-events:none;transition:.3s;z-index:50;max-width:90vw;text-align:center;
+    box-shadow:0 6px 18px rgba(0,0,0,.5);
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.bad{background:#5c1010;border-color:#a4161a;color:#ffd9d9}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🦀 BAU CUA NUSANTARA 🐟</h1>
+    <div class="sub">Permainan Tradisional Bầu Cua Tôm Cá</div>
+  </header>
+
+  <div class="banner">
+    ⚠️ <b>Mode Hiburan Murni.</b> Tidak ada taruhan uang asli, tidak ada deposit, tidak ada pembelian apa pun. Semua chip virtual dan gratis selamanya.
+  </div>
+
+  <div class="topbar">
+    <div class="balance">
+      <div class="lbl">Chip Virtual</div>
+      <div class="val" id="balance">1.000</div>
+    </div>
+    <button class="refill" id="refillBtn">+1.000<br>GRATIS</button>
+  </div>
+
+  <div class="denoms">
+    <div class="denom c10 sel" data-v="10">10</div>
+    <div class="denom c50" data-v="50">50</div>
+    <div class="denom c100" data-v="100">100</div>
+    <div class="denom c500" data-v="500">500</div>
+  </div>
+
+  <div class="board" id="board"></div>
+
+  <div class="dice-zone">
+    <div class="dice">
+      <div class="die-slot"><div class="die-hop" id="hop0"><div class="die" id="die0"></div></div></div>
+      <div class="die-slot"><div class="die-hop slow" id="hop1"><div class="die slow" id="die1"></div></div></div>
+      <div class="die-slot"><div class="die-hop slower" id="hop2"><div class="die slower" id="die2"></div></div></div>
+    </div>
+    <div class="dice-label" id="diceLabel">Letakkan chip, lalu tekan KOCOK</div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-roll" id="rollBtn">🎲 KOCOK</button>
+    <button class="btn btn-clear" id="clearBtn">Bersihkan</button>
+  </div>
+
+  <div class="history">
+    <h3>Riwayat Kocokan</h3>
+    <div class="hist-rows" id="histRows">
+      <div class="hrow" style="justify-content:center;color:#b8a884">Belum ada kocokan — mulailah dengan menempatkan chip</div>
+    </div>
+  </div>
+
+  <footer>
+    Replika sah permainan tradisional (logika orisinal: 3 dadu × 6 simbol, bayar sesuai jumlah kecocokan).<br>
+    Dibangun untuk hiburan &amp; edukasi. Judi dengan uang asli melanggar hukum — UU ITE &amp; KUHP Pasal 303.
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+/* ================== SIMBOL (SVG konsisten, gaya flat) ================== */
+const SYM = [
+  {id:'labu',  name:'Labu',     color:'#2d8a4e', svg:`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="28" y="4" width="8" height="9" rx="3" fill="#7a5a2e"/><ellipse cx="32" cy="16" rx="9" ry="8" fill="#3fa060"/><ellipse cx="32" cy="40" rx="21" ry="19" fill="#2d8a4e"/><path d="M24 46 Q32 58 40 46" stroke="#256d3e" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="30" rx="5" ry="8" fill="#57b56f" opacity=".55" transform="rotate(-18 24 30)"/></svg>`},
+  {id:'kepiting', name:'Kepiting', color:'#d63838', svg:`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="38" rx="18" ry="13" fill="#d63838"/><path d="M14 30 Q6 24 8 15 Q14 17 16 24" fill="none" stroke="#d63838" stroke-width="6" stroke-linecap="round"/><path d="M50 30 Q58 24 56 15 Q50 17 48 24" fill="none" stroke="#d63838" stroke-width="6" stroke-linecap="round"/><circle cx="10" cy="12" r="5" fill="#e4545c"/><circle cx="54" cy="12" r="5" fill="#e4545c"/><path d="M18 48 L11 56 M46 48 L53 56 M22 51 L17 59 M42 51 L47 59" stroke="#b02b2b" stroke-width="3" stroke-linecap="round"/><circle cx="26" cy="32" r="2.6" fill="#fff"/><circle cx="38" cy="32" r="2.6" fill="#fff"/><circle cx="26.6" cy="32.4" r="1.2" fill="#222"/><circle cx="38.6" cy="32.4" r="1.2" fill="#222"/><path d="M24 44 Q32 48 40 44" stroke="#9c2020" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`},
+  {id:'udang', name:'Udang',    color:'#f08c2e', svg:`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M50 18 Q58 12 60 6" stroke="#f08c2e" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M52 22 Q60 18 62 14" stroke="#f08c2e" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M16 44 Q12 20 34 15 Q52 12 51 24 Q50 34 36 38 Q24 41 22 48 Z" fill="#f08c2e"/><path d="M18 50 Q22 44 30 42 L33 49 Q25 52 20 55 Z" fill="#e0761f"/><path d="M12 52 L5 58 M13 56 L8 63 M16 58 L13 64" stroke="#e0761f" stroke-width="3" stroke-linecap="round"/><path d="M28 24 Q36 20 42 24 M26 31 Q34 27 41 30" stroke="#c96a15" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="42" cy="19" r="2" fill="#222"/></svg>`},
+  {id:'ikan',  name:'Ikan',     color:'#3a7bd5', svg:`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M10 32 Q24 14 44 16 Q56 17 58 24 L50 27 L58 30 Q56 40 44 42 Q28 46 10 32 Z" fill="#3a7bd5"/><path d="M10 32 L2 22 Q6 32 2 42 Z" fill="#2d5fa8"/><path d="M20 27 Q28 21 38 22" stroke="#6ba3ef" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="47" cy="25" r="2.4" fill="#fff"/><circle cx="47.6" cy="25.4" r="1.1" fill="#123"/><path d="M30 36 Q34 32 38 35" stroke="#2d5fa8" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`},
+  {id:'ayam',  name:'Ayam',    color:'#c9541e', svg:`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M34 8 Q31 4 36 3 Q39 6 37 9 M40 10 Q40 4 45 5 Q45 9 42 11 M29 10 Q26 5 31 4" stroke="#d63a2e" stroke-width="3.4" fill="none" stroke-linecap="round"/><circle cx="34" cy="15" r="6.4" fill="#e0652a"/><path d="M40 15 L48 17 L40 20 Z" fill="#f4a518"/><circle cx="36" cy="14" r="1.5" fill="#222"/><path d="M33 18 L34 20 L36 19" stroke="#a13a18" stroke-width="1.6" fill="none"/><path d="M14 38 Q10 24 26 22 Q40 20 40 30 Q41 42 26 46 Q14 48 14 38 Z" fill="#c9541e"/><path d="M15 40 Q4 44 3 52 Q10 52 15 47 Q12 55 8 60 Q16 58 19 52" fill="#a13a18"/><path d="M24 30 Q34 26 38 32" stroke="#e58a4e" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M22 46 L20 56 M30 47 L30 57" stroke="#a13a18" stroke-width="3" stroke-linecap="round"/><path d="M22 56 L18 58 M22 56 L26 57 M30 57 L27 60 M30 57 L33 59" stroke="#f4a518" stroke-width="2.2" stroke-linecap="round"/></svg>`},
+  {id:'rusa',  name:'Rusa',    color:'#8a5a2b', svg:`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M18 22 Q10 20 8 12 Q14 13 16 18 Q14 8 20 4 Q22 12 21 18" stroke="#6e451f" stroke-width="3.2" fill="none" stroke-linecap="round"/><path d="M46 22 Q54 20 56 12 Q50 13 48 18 Q50 8 44 4 Q42 12 43 18" stroke="#6e451f" stroke-width="3.2" fill="none" stroke-linecap="round"/><ellipse cx="32" cy="34" rx="13" ry="15" fill="#8a5a2b"/><ellipse cx="24" cy="52" rx="6" ry="9" fill="#7a4e24"/><ellipse cx="40" cy="52" rx="6" ry="9" fill="#7a4e24"/><path d="M22 26 Q14 28 12 24 Q16 22 22 23 M42 26 Q50 28 52 24 Q48 22 42 23" fill="#a9743c"/><circle cx="27" cy="31" r="2.2" fill="#fff"/><circle cx="37" cy="31" r="2.2" fill="#fff"/><circle cx="27.5" cy="31.4" r="1" fill="#222"/><circle cx="37.5" cy="31.4" r="1" fill="#222"/><path d="M29 40 Q32 43 35 40" stroke="#4a2d10" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="29" cy="39" r="1" fill="#4a2d10"/><circle cx="35" cy="39" r="1" fill="#4a2d10"/></svg>`},
+];
+
+/* ================== STATE ================== */
+const START_CHIPS = 1000;
+let balance  = START_CHIPS;
+let bets     = [0,0,0,0,0,0];   // taruhan per simbol (chip sudah keluar dari saldo)
+let denom    = 10;
+let rolling  = false;
+let curRot   = [[0,0],[0,0],[0,0]]; // rotasi kumulatif [X,Y] tiap dadu
+let lastFaces= [4,4,4];            // posisi awal: muka atas (f4 = atas)
+const fmt = n => n.toLocaleString('id-ID');
+
+/* orientasi supaya muka i menghadap PENONTON (depan).
+   (baseX + 360k, baseY + 360k) menghasilkan muka sama */
+const FACE_FRONT = [
+  {x:0,   y:0},    // f0 depan
+  {x:0,   y:-90},  // f1 kanan → depan
+  {x:0,   y:180},  // f2 belakang → depan
+  {x:0,   y:90},   // f3 kiri → depan
+  {x:-90, y:0},    // f4 atas → depan
+  {x:90,  y:0},    // f5 bawah → depan
+];
+
+/* ================== BANGUN UI ================== */
+const board = document.getElementById('board');
+SYM.forEach((s,i)=>{
+  const c = document.createElement('div');
+  c.className='cell'; c.dataset.i=i;
+  c.innerHTML = `<div class="icon">${s.svg}</div><div class="name">${s.name}</div><div class="amt" id="amt${i}"></div>`;
+  c.addEventListener('click',()=>placeChip(i));
+  board.appendChild(c);
+});
+
+/* dadu: tiap dadu punya 6 muka = 6 simbol (urutan tetap sama utk semua dadu,
+   persis logika asli: tiap muka satu simbol, lemparan acak) */
+for(let d=0; d<3; d++){
+  const die = document.getElementById('die'+d);
+  for(let f=0; f<6; f++){
+    const face = document.createElement('div');
+    face.className = 'face f'+f;
+    face.innerHTML = SYM[f].svg;
+    die.appendChild(face);
+  }
+}
+function setDieFace(d, symIdx){
+  // pilih muka yang menampilkan simbol symIdx menghadap depan,
+  // tambah putaran penuh supaya ada efek tumbling
+  const face = symIdx; // muka f menampilkan simbol f
+  const extraX = 360 * (2 + Math.floor(Math.random()*2));
+  const extraY = 360 * (2 + Math.floor(Math.random()*2));
+  const tx = FACE_FRONT[face].x + (Math.random()<.5?-extraX:extraX);
+  const ty = FACE_FRONT[face].y + (Math.random()<.5?-extraY:extraY);
+  curRot[d][0]=tx; curRot[d][1]=ty;
+  document.getElementById('die'+d).style.transform =
+    `rotateX(${tx}deg) rotateY(${ty}deg)`;
+}
+
+/* ================== INTERAKSI ================== */
+function placeChip(i){
+  if(rolling) return;
+  if(balance < denom){ showToast('Chip tidak cukup — tekan +1.000 GRATIS', true); return; }
+  balance -= denom;
+  bets[i]  += denom;
+  render();
+}
+document.querySelectorAll('.denom').forEach(el=>{
+  el.addEventListener('click',()=>{
+    document.querySelectorAll('.denom').forEach(x=>x.classList.remove('sel'));
+    el.classList.add('sel'); denom = +el.dataset.v;
+  });
+});
+document.getElementById('clearBtn').addEventListener('click',()=>{
+  if(rolling) return;
+  const total = bets.reduce((a,b)=>a+b,0);
+  balance += total; bets = [0,0,0,0,0,0];
+  if(total>0) showToast(`Taruhan dikembalikan (${fmt(total)} chip)`);
+  render();
+});
+document.getElementById('refillBtn').addEventListener('click',()=>{
+  if(rolling) return;
+  balance += 1000;
+  showToast('+1.000 chip virtual gratis ditambahkan 🎉');
+  render();
+});
+document.getElementById('rollBtn').addEventListener('click',()=>{
+  if(rolling) return;
+  const totalBet = bets.reduce((a,b)=>a+b,0);
+  if(totalBet===0){ showToast('Letakkan minimal satu chip dulu', true); return; }
+  rolling = true;
+  document.getElementById('rollBtn').disabled = true;
+  document.getElementById('diceLabel').innerHTML = 'Mengocok dadu…';
+
+  /* LOGIKA ORISINAL BAU CUA: 3 dadu, tiap dadu satu simbol acak seragam */
+  const results = [0,0,0].map(()=>Math.floor(Math.random()*6));
+  for(let d=0; d<3; d++){
+    const hop = document.getElementById('hop'+d);
+    hop.style.animation='none'; void hop.offsetWidth; // restart animasi
+    hop.style.animation='';
+    setDieFace(d, results[d]);
+  }
+  playRollSound();
+
+  setTimeout(()=>{
+    /* PAYOUT ORISINAL: tiap kecocokan = 1× taruhan (2 kecocokan = 2×, dst.) */
+    const mult = [0,0,0,0,0,0];
+    results.forEach(r=>mult[r]++);
+    const winners = [];
+    let payout = 0;
+    for(let i=0;i<6;i++) if(bets[i]>0 && mult[i]>0){ payout += mult[i]*bets[i]; winners.push(i); }
+
+    balance += payout;
+    const net = payout - totalBet;
+
+    // sorot sel pemenang
+    document.querySelectorAll('.cell').forEach(c=>c.classList.remove('win'));
+    winners.forEach(w=>{
+      const c = document.querySelector(`.cell[data-i="${w}"]`);
+      c.classList.add('win');
+      c.dataset.add = mult[w]+'×';
+    });
+
+    const nama = results.map(r=>SYM[r].name).join(' · ');
+    if(net>0)      showToast(`🎉 ${nama} — Menang +${fmt(net)} chip!`);
+    else if(net===0) showToast(`${nama} — Balik modal`);
+    else           showToast(`${nama} — Kalah ${fmt(-net)} chip. Coba lagi!`, true);
+
+    addHistory(results, net);
+
+    // ronde selesai: chip di meja diangkat (persis meja asli)
+    bets = [0,0,0,0,0,0];
+    document.querySelectorAll('.cell').forEach(c=>c.classList.remove('win'));
+
+    document.getElementById('diceLabel').innerHTML =
+      `Hasil: <b>${nama}</b>` + (net>0 ? ` — <b style="color:#8fe3b0">+${fmt(net)}</b>` : (net===0?` — balik modal`:` — <b style="color:#ff9d9d">${fmt(net)}</b>`));
+    rolling = false;
+    document.getElementById('rollBtn').disabled = false;
+    render();
+  }, 1950);
+});
+
+/* ================== RIWAYAT ================== */
+function addHistory(results, net){
+  const box = document.getElementById('histRows');
+  if(box.querySelector('.hrow') && box.children.length===1 && box.textContent.includes('Belum ada')) box.innerHTML='';
+  const row = document.createElement('div');
+  row.className='hrow';
+  row.innerHTML = `<div class="syms">${results.map(r=>SYM[r].svg).join('')}</div>
+    <div class="net ${net>=0?'plus':'minus'}">${net>0?'+'+fmt(net):(net===0?'±0':fmt(net))}</div>`;
+  box.prepend(row);
+  while(box.children.length>8) box.removeChild(box.lastChild);
+}
+
+/* ================== RENDER & UTIL ================== */
+function render(){
+  document.getElementById('balance').textContent = fmt(balance);
+  for(let i=0;i<6;i++){
+    const el = document.getElementById('amt'+i);
+    el.textContent = bets[i]>0 ? fmt(bets[i]) : '';
+    el.classList.toggle('has', bets[i]>0);
+  }
+}
+let toastTimer;
+function showToast(msg, bad=false){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.toggle('bad', bad);
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+/* suara kocok ringan via WebAudio (tanpa file eksternal) */
+function playRollSound(){
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const len = 0.28, sr = ctx.sampleRate;
+    const buf = ctx.createBuffer(1, sr*len, sr);
+    const data = buf.getChannelData(0);
+    for(let i=0;i<data.length;i++){
+      const t = i/data.length;
+      data[i] = (Math.random()*2-1) * Math.pow(1-t,2.2) * 0.22;
+    }
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const filt = ctx.createBiquadFilter(); filt.type='bandpass'; filt.frequency.value=1500; filt.Q.value=.8;
+    src.connect(filt).connect(ctx.destination); src.start();
+    setTimeout(()=>ctx.close(), 600);
+  }catch(e){/* diam saja bila diblokir */}
+}
+
+/* posisi awal: muka atas terlihat */
+setTimeout(()=>{ for(let d=0; d<3; d++) setDieFace(d, 4); }, 60);
+render();
+</script>
+</body>
+</html>
