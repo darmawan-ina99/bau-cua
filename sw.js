@@ -1,6 +1,6 @@
 /* Service worker minimal: cache app shell */
-const CACHE = 'baucua-v2';
-const ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
+const CACHE = 'baucua-v3';
+const ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'animals.png?v=20', 'icons/icon-192.png', 'icons/icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
 });
