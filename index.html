@@ -316,7 +316,7 @@
   </div>
 
   <footer>
-    Replika sah permainan tradisional — logika orisinal: 3 dadu × 6 simbol, bayar sesuai jumlah kecocokan.<br>
+    Permainan hiburan — 3 dadu, 6 simbol; menang untung 1:1 per kecocokan, bukan sekadar balik modal.<br>
     Dibangun untuk hiburan &amp; edukasi. Judi uang asli melanggar hukum (UU ITE &amp; KUHP 303).
   </footer>
 </div>
@@ -430,12 +430,12 @@ document.getElementById('rollBtn').addEventListener('click',()=>{
   playRollSound();
 
   setTimeout(()=>{
-    /* PAYOUT ORISINAL: tiap kemunculan simbol = 1× taruhan */
+    /* PAYOUT MURAH HATI (versi hiburan): modal kembali + untung 1:1 per kecocokan */
     const mult = [0,0,0,0,0,0];
     results.forEach(r=>mult[r]++);
     const winners = [];
     let payout = 0;
-    for(let i=0;i<6;i++) if(bets[i]>0 && mult[i]>0){ payout += mult[i]*bets[i]; winners.push(i); }
+    for(let i=0;i<6;i++) if(bets[i]>0 && mult[i]>0){ payout += (mult[i]+1)*bets[i]; winners.push(i); }
 
     balance += payout;
     const net = payout - totalBet;
